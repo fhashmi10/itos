@@ -1,6 +1,8 @@
 from prediction.predict_itos import PredictItos
 
 import traceback
+import gc
+
 from configs.config import CFG
 from flask import Flask, jsonify, request
 
@@ -13,7 +15,10 @@ predictor = PredictItos(CFG)
 def predict():
     data = request.json
     image = data['image']
+    print(len(gc.get_objects()))
     caption = predictor.predict_service(image)
+    gc.collect()
+    print(len(gc.get_objects()))
     return caption
 
 
