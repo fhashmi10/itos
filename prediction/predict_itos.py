@@ -56,3 +56,8 @@ class PredictItos:
             dec_input = tf.expand_dims([predicted_id], 0)
 
         return self.filter_text(result)
+    
+    def predict_service(self, image=None):
+        image = tf.convert_to_tensor(image)
+        self.predict(image)
+

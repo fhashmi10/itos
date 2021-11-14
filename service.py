@@ -1,9 +1,8 @@
-from prediction.predict_itos import PredictItos
 import traceback
-import tensorflow as tf
 
+from prediction.predict_itos import PredictItos
 from configs.config import CFG
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
@@ -13,8 +12,7 @@ predictor = PredictItos(CFG)
 def predict():
     data = request.json
     image = data['image']
-    image = tf.convert_to_tensor(data['image'])
-    caption = predictor.predict(image)
+    caption = predictor.predict_service(image)
     return caption
 
 @app.route('/',methods=["GET"])
