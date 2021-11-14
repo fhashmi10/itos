@@ -3,3 +3,4 @@ logs/
 saved_run/checkpoints/
 *.pyc
 *.psd
+*.code-workspace
