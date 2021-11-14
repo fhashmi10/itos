@@ -59,5 +59,6 @@ class PredictItos:
     
     def predict_service(self, image=None):
         image = tf.convert_to_tensor(image)
-        self.predict(image)
+        caption = self.predict(image)
+        return caption
 
