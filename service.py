@@ -15,10 +15,8 @@ predictor = PredictItos(CFG)
 def predict():
     data = request.json
     image = data['image']
-    print(len(gc.get_objects()))
     caption = predictor.predict_service(image)
     gc.collect()
-    print(len(gc.get_objects()))
     return caption
 
 
