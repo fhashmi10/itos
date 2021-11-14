@@ -2,19 +2,20 @@ from prediction.predict_itos import PredictItos
 
 import traceback
 import gc
+import os
 
 from configs.config import CFG
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
-
-predictor = PredictItos(CFG)
+app.config['SECRET_KEY'] = 'It0sK3y_10'
 
 
 @app.route('/predict', methods=["POST"])
 def predict():
     data = request.json
     image = data['image']
+    predictor = PredictItos(CFG)
     caption = predictor.predict_service(image)
     gc.collect()
     return caption
