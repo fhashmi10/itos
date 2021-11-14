@@ -2,7 +2,7 @@ import requests
 from PIL import Image
 import numpy as np
 
-ENDPOINT_URL = "http://localhost:8080/predict"
+ENDPOINT_URL = "http://127.0.0.1:5000/predict"
 
 
 def predict():

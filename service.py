@@ -1,28 +1,28 @@
 from prediction.predict_itos import PredictItos
-import os
 import traceback
 import tensorflow as tf
 
 from configs.config import CFG
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 
 app = Flask(__name__)
 
-APP_ROOT = os.getenv('APP_ROOT', '/predict')
-HOST = "localhost"
-PORT_NUMBER = int(os.getenv('PORT_NUMBER', 8080))
-
-
 predictor = PredictItos(CFG)
 
-
-@app.route(APP_ROOT, methods=["POST"])
+@app.route('/predict',methods=["POST"])
 def predict():
     data = request.json
     image = data['image']
     image = tf.convert_to_tensor(data['image'])
     caption = predictor.predict(image)
     return caption
+
+@app.route('/',methods=["GET"])
+def index():
+    try:
+        return '<p>Use API: http://fh-itos.herokuapp.com/predict</p><'
+    except:
+        return '<p>Exception Occurred!!</p>'
 
 
 @app.errorhandler(Exception)
@@ -31,4 +31,4 @@ def handle_exception(e):
 
 
 if __name__ == '__main__':
-    app.run(host=HOST, port=PORT_NUMBER)
+    app.run()
