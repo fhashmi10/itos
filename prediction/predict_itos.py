@@ -1,21 +1,30 @@
 import tensorflow as tf
 
 from pickle import load
+from datetime import datetime
+
 from utils.config import Config
+from utils.logger import get_logger
+LOG = get_logger('PredictItos')
 
 
 class PredictItos:
     def __init__(self, config):
         self.units = Config.from_json(config).model.units
+        LOG.info(f'Init: {datetime.now().time()}')
         self.feature_model =tf.keras.models.load_model(
             'saved_model/inceptionv3', compile=False)
+        LOG.info(f'inception loaded: {datetime.now().time()}')
         self.encoder = tf.keras.models.load_model(
             'saved_model/encoder', compile=False)
+        LOG.info(f'Encoder loaded: {datetime.now().time()}')
         self.decoder = tf.keras.models.load_model(
             'saved_model/decoder', compile=False)
+        LOG.info(f'Decoder loaded {datetime.now().time()}')
         self.tokenizer = None
         with open("saved_model/tokenizer.pkl", "rb") as f:
             self.tokenizer = load(f)
+        LOG.info(f'Tokenizer loaded: {datetime.now().time()}')
 
     def preprocess(self, image):
         image = tf.image.resize(image, (299, 299))

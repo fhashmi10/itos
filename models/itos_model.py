@@ -53,11 +53,11 @@ class ItosModel(BaseModel):
         # Save tokenizer
         with open("./saved_model/tokenizer.pkl", "wb") as f:
             dump(self.tokenizer, f)
-        LOG.info(f'Tokenizer saved successfully.')
+        LOG.info('Tokenizer saved successfully.')
         # Split in train and test
         self.train_dataset, self.test_dataset = DataLoader.split_data(self.all_img_path, self.cap_vector, self.batch_size,
                                                                       self.buffer_size)
-        LOG.info(f'Train and test split is done successfully.')
+        LOG.info('Train and test split is done successfully.')
 
     def train(self):
         """Compiles and trains the model"""
