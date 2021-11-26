@@ -1,6 +1,6 @@
 data/
 logs/
-saved_run/checkpoints/
+checkpoints/
 *.pyc
 *.psd
 *.code-workspace

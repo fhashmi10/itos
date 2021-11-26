@@ -15,6 +15,9 @@ class TransferInceptionV3:
         self.hidden = self.image_model.layers[-1].output
         self.image_features_extract_model = tf.keras.Model(
             self.input, self.hidden)
+        self.image_features_extract_model.save('./saved_model/inceptionv3/')
+        LOG.info('InceptionV3 saved successfully.')
+        
 
     def save_features(self, images_folder, image_dataset):
         # avoid creating npy files multiple times

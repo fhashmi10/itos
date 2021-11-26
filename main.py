@@ -12,9 +12,6 @@ from utils.logger import get_logger
 LOG = get_logger('main')
 
 
-sample_filepath = './data/Images/667626_18933d713e.jpg'
-
-
 def train():
     # build model
     model = ItosModel(CFG)
@@ -26,6 +23,7 @@ def train():
 
 def predict():
     predictor = PredictItos(CFG)
+    sample_filepath = './data/Images/667626_18933d713e.jpg'
     image = tf.io.read_file(sample_filepath)
     image = tf.image.decode_image(image, channels=3)
     caption = predictor.predict(image)
@@ -34,7 +32,7 @@ def predict():
 
 def run():
     # change train_mode to True if training needs to be performed
-    train_mode = False
+    train_mode = True
     try:
         if train_mode == True:
             train()

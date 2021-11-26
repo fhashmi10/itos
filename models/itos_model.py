@@ -1,12 +1,13 @@
 import tensorflow as tf
 
 from .base_model import BaseModel
-from .tokenizer_model import TokenizerModel
+
+from dataset.dataloader import DataLoader
 from transfer.transfer_inceptionV3 import TransferInceptionV3
+from .tokenizer_model import TokenizerModel
 from .encoder import Encoder
 from .decoder import Decoder
 
-from dataset.dataloader import DataLoader
 from training.train_itos import TrainItos
 
 from pickle import dump
@@ -18,9 +19,9 @@ LOG = get_logger('itosmodel')
 class ItosModel(BaseModel):
     def __init__(self, config):
         super().__init__(config)
+        self.transfer_model = TransferInceptionV3()
         self.tokenizer_model = TokenizerModel(self.config.tokenize)
         self.tokenizer = None
-        self.transfer_model = TransferInceptionV3()
         self.encoder_model = Encoder(self.config.model.embedding_dim)
         self.decoder_model = Decoder(
             self.config.model.units, self.config.tokenize.vocab_size, self.config.model.embedding_dim)
@@ -33,6 +34,7 @@ class ItosModel(BaseModel):
         self.batch_size = self.config.train.batch_size
         self.buffer_size = self.config.train.buffer_size
         self.epoches = self.config.train.epoches
+        self.units = self.config.model.units
 
         self.train_dataset = []
         self.test_dataset = []
@@ -49,8 +51,9 @@ class ItosModel(BaseModel):
         self.cap_vector, self.tokenizer = self.tokenizer_model.get_captions_vector(
             self.all_captions)
         # Save tokenizer
-        with open("./saved_run/tokenizer.pkl", "wb") as f:
+        with open("./saved_model/tokenizer.pkl", "wb") as f:
             dump(self.tokenizer, f)
+        LOG.info(f'Tokenizer saved successfully.')
         # Split in train and test
         self.train_dataset, self.test_dataset = DataLoader.split_data(self.all_img_path, self.cap_vector, self.batch_size,
                                                                       self.buffer_size)
@@ -64,6 +67,6 @@ class ItosModel(BaseModel):
             from_logits=True)
         metrics = tf.keras.metrics.SparseCategoricalAccuracy()
 
-        trainer = TrainItos(self.tokenizer, self.encoder_model, self.decoder_model,
+        trainer = TrainItos(self.tokenizer, self.units, self.encoder_model, self.decoder_model,
                             self.train_dataset, loss_func, optimizer, metrics, self.epoches)
         trainer.train()

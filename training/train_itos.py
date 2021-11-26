@@ -7,8 +7,9 @@ LOG = get_logger('trainer')
 
 
 class TrainItos:
-    def __init__(self, tokenizer, encoder, decoder, input, loss_fn, optimizer, metric, epochs):
+    def __init__(self, tokenizer, units, encoder, decoder, input, loss_fn, optimizer, metric, epochs):
         self.tokenizer = tokenizer
+        self.units = units
         self.encoder = encoder
         self.decoder = decoder
         self.input = input
@@ -21,9 +22,7 @@ class TrainItos:
                                               decoder=decoder,
                                               optimizer=optimizer)
         self.checkpoint_manager = tf.train.CheckpointManager(
-            self.checkpoint, './saved_run/checkpoints', max_to_keep=3)
-
-        self.model_save_path = 'saved_run/'
+            self.checkpoint, './checkpoints', max_to_keep=3)
 
     def loss_function(self, real, pred):
         mask = tf.math.logical_not(tf.math.equal(real, 0))
@@ -34,7 +33,7 @@ class TrainItos:
 
     def train_step(self, img_tensor, target):
         loss = 0
-        hidden = self.decoder.init_state(batch_size=target.shape[0])
+        hidden = tf.zeros((1, self.units))
         dec_input = tf.expand_dims(
             [self.tokenizer.word_index['<start>']] * target.shape[0], 1)
 
@@ -88,10 +87,8 @@ class TrainItos:
 
                 self.metric.reset_states()
         
-        self.encoder.save('./saved_run/saved_model/encoder/')
-        #tf.saved_model.save(self.encoder, os.path.join(self.model_save_path, ""))
+        self.encoder.save('./saved_model/encoder/')
         LOG.info("Saved Encoder")
         
-        self.decoder.save('./saved_run/saved_model/decoder/')
-        #tf.saved_model.save(self.decoder, os.path.join(self.model_save_path, "model/decoder/"))
+        self.decoder.save('./saved_model/decoder/')
         LOG.info("Saved Decoder")
