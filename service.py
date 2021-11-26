@@ -1,7 +1,6 @@
 from prediction.predict_itos import PredictItos
 
 import traceback
-import gc
 import os
 
 from configs.config import CFG
@@ -17,7 +16,6 @@ def predict():
     image = data['image']
     predictor = PredictItos(CFG)
     caption = predictor.predict_service(image)
-    gc.collect()
     return caption
 
 

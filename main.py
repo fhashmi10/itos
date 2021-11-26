@@ -12,6 +12,9 @@ from utils.logger import get_logger
 LOG = get_logger('main')
 
 
+# change train_mode to True if training needs to be performed
+train_mode = False
+
 def train():
     # build model
     model = ItosModel(CFG)
@@ -31,8 +34,6 @@ def predict():
 
 
 def run():
-    # change train_mode to True if training needs to be performed
-    train_mode = True
     try:
         if train_mode == True:
             train()

@@ -1,19 +1,20 @@
 import tensorflow as tf
+
 from pickle import load
-from transfer.transfer_inceptionV3 import TransferInceptionV3
 from utils.config import Config
 
 
 class PredictItos:
     def __init__(self, config):
-        self.encoder = tf.keras.models.load_model(
-            'saved_run/saved_model/encoder')
-        self.decoder = tf.keras.models.load_model(
-            'saved_run/saved_model/decoder')
         self.units = Config.from_json(config).model.units
-        self.feature_model = None
+        self.feature_model =tf.keras.models.load_model(
+            'saved_model/inceptionv3', compile=False)
+        self.encoder = tf.keras.models.load_model(
+            'saved_model/encoder', compile=False)
+        self.decoder = tf.keras.models.load_model(
+            'saved_model/decoder', compile=False)
         self.tokenizer = None
-        with open("./saved_run/tokenizer.pkl", "rb") as f:
+        with open("saved_model/tokenizer.pkl", "rb") as f:
             self.tokenizer = load(f)
 
     def preprocess(self, image):
@@ -24,8 +25,7 @@ class PredictItos:
 
     def get_image_tensor(self, image):
         input_img = self.preprocess(image)
-        transfer_model = TransferInceptionV3()
-        img_tensor_val = transfer_model.image_features_extract_model(input_img)
+        img_tensor_val = self.feature_model(input_img)
         img_tensor_val = tf.reshape(
             img_tensor_val, (img_tensor_val.shape[0], -1, img_tensor_val.shape[3]))
         return img_tensor_val
