@@ -22,7 +22,7 @@ def predict():
 @app.route('/', methods=["GET"])
 def index():
     try:
-        return '<p>Use API: http://fh-itos.herokuapp.com/predict</p><'
+        return '<p>Use API: http://fh-itos.herokuapp.com/predict</p>'
     except:
         return '<p>Exception Occurred!!</p>'
 
